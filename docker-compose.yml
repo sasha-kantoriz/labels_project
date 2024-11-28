@@ -3,6 +3,8 @@ services:
     build: ./
     restart: always
     command: gunicorn --bind 0.0.0.0:5000 app:app
+    environment:
+      - SCRIPT_NAME=/labels
     env_file:
       - .env
     ports:
