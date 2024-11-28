@@ -2,7 +2,7 @@ services:
   app:
     build: ./
     restart: always
-    command: gunicorn --bind 0.0.0.0:5000 app:app
+    command: gunicorn --bind 0.0.0.0:5000 app:app --access-logfile '-' --error-logfile '-'
     environment:
       - SCRIPT_NAME=/labels
     env_file:

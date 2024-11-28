@@ -28,7 +28,7 @@ def index():
 @app.route('/callback', methods=['POST'])
 def callback():
     pathlib.Path('/home/printer/data').mkdir(exist_ok=True)
-    data = request.get_json()
+    data = request.form
     with open(f'/home/printer/data/{data["request_id"]}.json', 'w') as f:
         f.write(json.dumps(data))
     return data
