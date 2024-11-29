@@ -13,7 +13,7 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        record_id = request.form.get('id')
+        record_id = request.form.get('id-input')
         request_id = uuid4().hex
         response = requests.get(f'https://hook.eu1.make.com/{os.getenv("make_token")}', params={'request_id': request_id, 'idmagazzino': record_id})
         for _ in range(20):
