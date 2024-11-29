@@ -16,7 +16,7 @@ def index():
         record_id = request.form.get('id-input')
         request_id = uuid4().hex
         response = requests.get(f'https://hook.eu1.make.com/{os.getenv("make_token")}', params={'request_id': request_id, 'idmagazzino': record_id})
-        for _ in range(20):
+        for _ in range(100):
             if os.path.exists(f'/home/printer/data/{request_id}.json'):
                 with open(f'/home/printer/data/{request_id}.json', 'r') as f:
                     data = json.loads(f.read())
