@@ -9,12 +9,3 @@ services:
       - .env
     ports:
       - "5000:5000"
-
-  redis:
-    image: redis
-    restart: always
-    volumes:
-      - redis_data:/data
-
-volumes:
-  redis_data:
