@@ -36,7 +36,7 @@ def index():
                     pdf.image(qr_path, x=5, y=5, w=30, h=30)
                     pdf.set_y(10)
                     pdf.set_x(40)
-                    pdf.set_font('helvetica', size=7)
+                    pdf.set_font('helvetica', size=10)
                     label_text = f"""#Maga {data['idmagazzino']} --- posizione: {data['posizione']}
 Tipo: {data['tipo']} --- FEID: {data['FEID']}
 Tiratura: {data['tiratura']}
