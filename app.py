@@ -33,7 +33,7 @@ def index():
                     pdf.set_font('helvetica', size=12)
                     pdf.set_font(style="U")
                     pdf.cell(text=f"{data['titolo']}\n\n", align="C", w=103)
-                    pdf.image("some_file.png", x=0, y=5, w=30, h=30)
+                    pdf.image(qr_path, x=0, y=5, w=30, h=30)
                     pdf.set_y(5)
                     pdf.set_x(40)
                     pdf.set_font('helvetica', size=12)
