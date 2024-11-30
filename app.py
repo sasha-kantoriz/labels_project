@@ -49,7 +49,7 @@ Commentario: {data['commentario']}
                         pdf_file_buffer.seek(0)
                         for file in [data_path, qr_path, pdf_path]:
                             os.remove(file)
-                        return send_file(pdf_file_buffer, attachment_filename=f"{data['idURL']}_label.pdf", as_attachment=True)
+                        return send_file(pdf_file_buffer, download_name=f"{data['idURL']}_label.pdf", as_attachment=True)
             sleep(1)
         return jsonify({'error': 'Request timed out'})
     return render_template('index.html')
