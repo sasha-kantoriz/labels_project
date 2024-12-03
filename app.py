@@ -107,7 +107,7 @@ def index():
     Commentario: {data['commentario']}
                         """
                         pdf.multi_cell(text=label_text, align="L", w=93)
-                        pdf.output(pdf_path)
+                pdf.output(pdf_path)
                 with open(pdf_path, 'rb') as pdf_file:
                     pdf_file_buffer = io.BytesIO(pdf_file.read())
                     pdf_file_buffer.seek(0)
