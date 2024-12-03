@@ -84,7 +84,7 @@ def index():
         for _ in range(100):
             if os.path.exists(last_record_data_path):
                 for record_id in record_ids:
-                    with open(data_path, 'r') as f:
+                    with open(data_path.format(record_id=record_id), 'r') as f:
                         data = json.loads(f.read())
                         if data["idURL"] == "ERROR": continue
                         url = f"https://ff.wpboy.it/edit-item/?record={data['idURL']}"
@@ -111,8 +111,10 @@ def index():
                         with open(pdf_path, 'rb') as pdf_file:
                             pdf_file_buffer = io.BytesIO(pdf_file.read())
                             pdf_file_buffer.seek(0)
-                            for file in [data_path, qr_path, pdf_path]:
+                            for file in [qr_path, pdf_path]:
                                 os.remove(file)
+                            for record_id in record_ids:
+                                os.remove(f'/home/printer/data/{record_id}.json')
                             return send_file(pdf_file_buffer, download_name=f"{data['idURL']}_label.pdf", as_attachment=True)
             sleep(1)
         return jsonify({'error': 'No data came back from Make.com'})
