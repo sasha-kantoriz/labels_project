@@ -111,13 +111,15 @@ def index():
                                 os.remove(file)
                             return send_file(pdf_file_buffer, download_name=f"{data['idURL']}_label.pdf", as_attachment=True)
             sleep(1)
-        return jsonify({'error': 'Request timed out'})
+        return jsonify({'error': 'No data came back from Make.com'})
     return render_template('index.html')
 
 @app.route('/callback', methods=['POST'])
 def callback():
     pathlib.Path('/home/printer/data').mkdir(exist_ok=True)
     data = request.form
+    if data["idmagazzino"] == "N/A":
+        return jsonify({'error': 'No data came back from Make.com'}), 200
     with open(f'/home/printer/data/{data["idmagazzino"]}.json', 'w') as f:
         f.write(json.dumps(data))
     return data
