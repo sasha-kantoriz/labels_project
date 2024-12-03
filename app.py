@@ -54,15 +54,15 @@ Tiratura: {data['tiratura']}
 Commentario: {data['commentario']}
                     """
                     pdf.multi_cell(text=label_text, align="L", w=93)
-                    pdf.output(pdf_path)
-                    with open(pdf_path, 'rb') as pdf_file:
-                        pdf_file_buffer = io.BytesIO(pdf_file.read())
-                        pdf_file_buffer.seek(0)
-                        for file in [qr_path, pdf_path]:
-                            os.remove(file)
-                        for record_id in record_ids:
-                            os.remove(f'/home/printer/data/{record_id}.json')
-                        return send_file(pdf_file_buffer, download_name=f"{data['idURL']}_label.pdf", as_attachment=True)
+            pdf.output(pdf_path)
+            with open(pdf_path, 'rb') as pdf_file:
+                pdf_file_buffer = io.BytesIO(pdf_file.read())
+                pdf_file_buffer.seek(0)
+                for file in [qr_path, pdf_path]:
+                    os.remove(file)
+                for record_id in record_ids:
+                    os.remove(f'/home/printer/data/{record_id}.json')
+            return send_file(pdf_file_buffer, download_name=f"label.pdf", as_attachment=True)
         sleep(1)
     return jsonify({'error': 'Request timed out'})
 
@@ -108,14 +108,14 @@ def index():
                         """
                         pdf.multi_cell(text=label_text, align="L", w=93)
                         pdf.output(pdf_path)
-                        with open(pdf_path, 'rb') as pdf_file:
-                            pdf_file_buffer = io.BytesIO(pdf_file.read())
-                            pdf_file_buffer.seek(0)
-                            for file in [qr_path, pdf_path]:
-                                os.remove(file)
-                            for record_id in record_ids:
-                                os.remove(f'/home/printer/data/{record_id}.json')
-                            return send_file(pdf_file_buffer, download_name=f"{data['idURL']}_label.pdf", as_attachment=True)
+                with open(pdf_path, 'rb') as pdf_file:
+                    pdf_file_buffer = io.BytesIO(pdf_file.read())
+                    pdf_file_buffer.seek(0)
+                    for file in [qr_path, pdf_path]:
+                        os.remove(file)
+                    for record_id in record_ids:
+                        os.remove(f'/home/printer/data/{record_id}.json')
+                return send_file(pdf_file_buffer, download_name=f"{data['idURL']}_label.pdf", as_attachment=True)
             sleep(1)
         return jsonify({'error': 'No data came back from Make.com'})
     return render_template('index.html')
