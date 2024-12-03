@@ -33,6 +33,7 @@ def print_label():
             for record_id in record_ids:
                 with open(data_path, 'r') as f:
                     data = json.loads(f.read())
+                    if data["idURL"] == "ERROR": continue
                     url = f"https://ff.wpboy.it/edit-item/?record={data['idURL']}"
                     img = qrcode.make(url, box_size=30, border=1)
                     img.save(qr_path)
@@ -83,6 +84,7 @@ def index():
                 for record_id in record_ids:
                     with open(data_path, 'r') as f:
                         data = json.loads(f.read())
+                        if data["idURL"] == "ERROR": continue
                         url = f"https://ff.wpboy.it/edit-item/?record={data['idURL']}"
                         img = qrcode.make(url, box_size=30, border=1)
                         img.save(qr_path)
@@ -118,8 +120,6 @@ def index():
 def callback():
     pathlib.Path('/home/printer/data').mkdir(exist_ok=True)
     data = request.form
-    if data["idmagazzino"] == "N/A":
-        return jsonify({'error': 'No data came back from Make.com'}), 200
     with open(f'/home/printer/data/{data["idmagazzino"]}.json', 'w') as f:
         f.write(json.dumps(data))
     return data
