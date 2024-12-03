@@ -33,7 +33,7 @@ def print_label():
             pdf = FPDF(format=(103, 40))
             pdf.set_margin(0.5)
             for record_id in record_ids:
-                with open(data_path, 'r') as f:
+                with open(data_path.format(record_id=record_id), 'r') as f:
                     data = json.loads(f.read())
                     if data["idURL"] == "ERROR": continue
                     url = f"https://ff.wpboy.it/edit-item/?record={data['idURL']}"
