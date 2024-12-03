@@ -22,7 +22,7 @@ def print_label():
         record_boundaries = records.replace(' ', '').split('-')
         record_ids = range(int(record_boundaries[0]), int(record_boundaries[-1]))
     elif ',' in records:
-        record_ids = map(int, records.replace(' ', '').split(','))
+        record_ids = list(map(int, records.replace(' ', '').split(',')))
     else:
         record_ids = [int(records)]
     for record_id in record_ids:
@@ -72,7 +72,7 @@ def index():
             record_boundaries = records.replace(' ', '').split('-')
             record_ids = range(int(record_boundaries[0]), int(record_boundaries[-1]))
         elif ',' in records:
-            record_ids = map(int, records.replace(' ', '').split(','))
+            record_ids = list(map(int, records.replace(' ', '').split(',')))
         else:
             record_ids = [int(records)]
         for record_id in record_ids:
