@@ -5,7 +5,7 @@ import pathlib
 import requests
 from uuid import uuid4
 from time import sleep
-from flask import Flask, render_template, request, jsonify, send_file
+from flask import Flask, render_template, request, jsonify, send_file, redirect, url_for
 from fpdf import FPDF
 import qrcode
 
@@ -15,6 +15,8 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def print_label():
+    if not request.args.get('id'):
+        return redirect(url_for('index'))
     records = request.args.get('id-input')
     if '-' in records:
         record_boundaries = records.replace(' ', '').split('-')
