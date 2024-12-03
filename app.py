@@ -12,21 +12,29 @@ import qrcode
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'POST':
-        record_id = request.form.get('id-input')
-        request_id = uuid4().hex
-        qr_path, pdf_path, data_path = f"{request_id}_qr.png", f"/home/printer/data/{request_id}.pdf", f'/home/printer/data/{request_id}.json'
-        response = requests.get(f'https://hook.eu1.make.com/{os.getenv("make_token")}', params={'request_id': request_id, 'idmagazzino': record_id})
-        for _ in range(100):
-            if os.path.exists(data_path):
+
+@app.route('/', methods=['GET'])
+def print_label():
+    records = request.args.get('id-input')
+    if '-' in records:
+        record_boundaries = records.replace(' ', '').split('-')
+        record_ids = range(int(record_boundaries[0]), int(record_boundaries[-1]))
+    elif ',' in records:
+        record_ids = map(int, records.replace(' ', '').split(','))
+    else:
+        record_ids = [int(records)]
+    for record_id in record_ids:
+        response = requests.get(f'https://hook.eu1.make.com/{os.getenv("make_token")}', params={'idmagazzino': record_id})
+    qr_path, pdf_path, data_path, last_record_data_path = "qr.png", "/home/printer/data/label.pdf", '/home/printer/data/{record_id}.json', f'/home/printer/data/{record_ids[-1]}.json'
+    for _ in range(100):
+        if os.path.exists(last_record_data_path):
+            for record_id in record_ids:
                 with open(data_path, 'r') as f:
                     data = json.loads(f.read())
                     url = f"https://ff.wpboy.it/edit-item/?record={data['idURL']}"
                     img = qrcode.make(url, box_size=30, border=1)
                     img.save(qr_path)
-                    #
+                    # PDF
                     pdf = FPDF(format=(103, 40))
                     pdf.set_margin(0.5)
                     pdf.add_page()
@@ -50,6 +58,56 @@ Commentario: {data['commentario']}
                         for file in [data_path, qr_path, pdf_path]:
                             os.remove(file)
                         return send_file(pdf_file_buffer, download_name=f"{data['idURL']}_label.pdf", as_attachment=True)
+        sleep(1)
+    return jsonify({'error': 'Request timed out'})
+
+
+@app.route('/print', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        records = request.form.get('id-input')
+        if '-' in records:
+            record_boundaries = records.replace(' ', '').split('-')
+            record_ids = range(int(record_boundaries[0]), int(record_boundaries[-1]))
+        elif ',' in records:
+            record_ids = map(int, records.replace(' ', '').split(','))
+        else:
+            record_ids = [int(records)]
+        for record_id in record_ids:
+            response = requests.get(f'https://hook.eu1.make.com/{os.getenv("make_token")}', params={'idmagazzino': record_id})
+        qr_path, pdf_path, data_path, last_record_data_path = "qr.png", "/home/printer/data/label.pdf", '/home/printer/data/{record_id}.json', f'/home/printer/data/{record_ids[-1]}.json'
+        for _ in range(100):
+            if os.path.exists(last_record_data_path):
+                for record_id in record_ids:
+                    with open(data_path, 'r') as f:
+                        data = json.loads(f.read())
+                        url = f"https://ff.wpboy.it/edit-item/?record={data['idURL']}"
+                        img = qrcode.make(url, box_size=30, border=1)
+                        img.save(qr_path)
+                        # PDF
+                        pdf = FPDF(format=(103, 40))
+                        pdf.set_margin(0.5)
+                        pdf.add_page()
+                        pdf.set_font('helvetica', size=12)
+                        pdf.set_font(style="U")
+                        pdf.cell(text=f"{data['titolo']}\n\n", align="C", w=103)
+                        pdf.image(qr_path, x=5, y=5, w=30, h=30)
+                        pdf.set_y(10)
+                        pdf.set_x(40)
+                        pdf.set_font('helvetica', size=9)
+                        label_text = f"""#Maga {data['idmagazzino']} --- posizione: {data['posizione']}
+    Tipo: {data['tipo']} --- FEID: {data['FEID']}
+    Tiratura: {data['tiratura']}
+    Commentario: {data['commentario']}
+                        """
+                        pdf.multi_cell(text=label_text, align="L", w=93)
+                        pdf.output(pdf_path)
+                        with open(pdf_path, 'rb') as pdf_file:
+                            pdf_file_buffer = io.BytesIO(pdf_file.read())
+                            pdf_file_buffer.seek(0)
+                            for file in [data_path, qr_path, pdf_path]:
+                                os.remove(file)
+                            return send_file(pdf_file_buffer, download_name=f"{data['idURL']}_label.pdf", as_attachment=True)
             sleep(1)
         return jsonify({'error': 'Request timed out'})
     return render_template('index.html')
@@ -58,6 +116,6 @@ Commentario: {data['commentario']}
 def callback():
     pathlib.Path('/home/printer/data').mkdir(exist_ok=True)
     data = request.form
-    with open(f'/home/printer/data/{data["request_id"]}.json', 'w') as f:
+    with open(f'/home/printer/data/{data["idmagazzino"]}.json', 'w') as f:
         f.write(json.dumps(data))
     return data
