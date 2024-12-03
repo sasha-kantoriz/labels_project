@@ -30,6 +30,8 @@ def print_label():
     qr_path, pdf_path, data_path, last_record_data_path = "qr.png", "/home/printer/data/label.pdf", '/home/printer/data/{record_id}.json', f'/home/printer/data/{record_ids[-1]}.json'
     for _ in range(100):
         if os.path.exists(last_record_data_path):
+            pdf = FPDF(format=(103, 40))
+            pdf.set_margin(0.5)
             for record_id in record_ids:
                 with open(data_path, 'r') as f:
                     data = json.loads(f.read())
@@ -38,8 +40,6 @@ def print_label():
                     img = qrcode.make(url, box_size=30, border=1)
                     img.save(qr_path)
                     # PDF
-                    pdf = FPDF(format=(103, 40))
-                    pdf.set_margin(0.5)
                     pdf.add_page()
                     pdf.set_font('helvetica', size=12)
                     pdf.set_font(style="U")
@@ -83,6 +83,8 @@ def index():
         qr_path, pdf_path, data_path, last_record_data_path = "qr.png", "/home/printer/data/label.pdf", '/home/printer/data/{record_id}.json', f'/home/printer/data/{record_ids[-1]}.json'
         for _ in range(100):
             if os.path.exists(last_record_data_path):
+                pdf = FPDF(format=(103, 40))
+                pdf.set_margin(0.5)
                 for record_id in record_ids:
                     with open(data_path.format(record_id=record_id), 'r') as f:
                         data = json.loads(f.read())
@@ -91,8 +93,6 @@ def index():
                         img = qrcode.make(url, box_size=30, border=1)
                         img.save(qr_path)
                         # PDF
-                        pdf = FPDF(format=(103, 40))
-                        pdf.set_margin(0.5)
                         pdf.add_page()
                         pdf.set_font('helvetica', size=12)
                         pdf.set_font(style="U")
