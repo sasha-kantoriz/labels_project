@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def print_label():
-    if not request.args.get('id'):
+    if not request.args.get('id-input'):
         return redirect(url_for('index'))
     records = request.args.get('id-input')
     if '-' in records:
