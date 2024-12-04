@@ -30,6 +30,17 @@ def print_label():
     qr_path, pdf_path, data_path, last_record_data_path = "qr.png", "/home/printer/data/label.pdf", '/home/printer/data/{record_id}.json', f'/home/printer/data/{record_ids[-1]}.json'
     for _ in range(100):
         if os.path.exists(last_record_data_path):
+            records_presence = []
+            for record_id in record_ids:
+                with open(data_path.format(record_id=record_id), 'r') as f:
+                    data = json.loads(f.read())
+                    records_presence.append(data["idURL"] == "ERROR")
+            if any(records_presence):
+                return jsonify(
+                    {
+                        "error": "All records are missing from the database"
+                    }
+                )
             pdf = FPDF(format=(103, 40))
             pdf.set_margin(0.5)
             for record_id in record_ids:
@@ -83,6 +94,17 @@ def index():
         qr_path, pdf_path, data_path, last_record_data_path = "qr.png", "/home/printer/data/label.pdf", '/home/printer/data/{record_id}.json', f'/home/printer/data/{record_ids[-1]}.json'
         for _ in range(100):
             if os.path.exists(last_record_data_path):
+                records_presence = []
+                for record_id in record_ids:
+                    with open(data_path.format(record_id=record_id), 'r') as f:
+                        data = json.loads(f.read())
+                        records_presence.append(data["idURL"] == "ERROR")
+                if any(records_presence):
+                    return jsonify(
+                        {
+                            "error": "All records are missing from the database"
+                        }
+                    )
                 pdf = FPDF(format=(103, 40))
                 pdf.set_margin(0.5)
                 for record_id in record_ids:
