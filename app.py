@@ -20,13 +20,14 @@ def print_label():
     records = request.args.get('id-input')
     if '-' in records:
         record_boundaries = records.replace(' ', '').split('-')
-        record_ids = range(int(record_boundaries[0]), int(record_boundaries[-1]))
+        record_ids = range(int(record_boundaries[0]), int(record_boundaries[-1])+1)
     elif ',' in records:
         record_ids = list(map(int, records.replace(' ', '').split(',')))
     else:
         record_ids = [int(records)]
     for record_id in record_ids:
         response = requests.get(f'https://hook.eu1.make.com/{os.getenv("make_token")}', params={'idmagazzino': record_id})
+        sleep(1)
     qr_path, pdf_path, data_path, last_record_data_path = "qr.png", "/home/printer/data/label.pdf", '/home/printer/data/{record_id}.json', f'/home/printer/data/{record_ids[-1]}.json'
     for _ in range(100):
         if os.path.exists(last_record_data_path):
@@ -86,13 +87,14 @@ def index():
         records = request.form.get('id-input')
         if '-' in records:
             record_boundaries = records.replace(' ', '').split('-')
-            record_ids = range(int(record_boundaries[0]), int(record_boundaries[-1]))
+            record_ids = range(int(record_boundaries[0]), int(record_boundaries[-1])+1)
         elif ',' in records:
             record_ids = list(map(int, records.replace(' ', '').split(',')))
         else:
             record_ids = [int(records)]
         for record_id in record_ids:
             response = requests.get(f'https://hook.eu1.make.com/{os.getenv("make_token")}', params={'idmagazzino': record_id})
+            sleep(1)
         qr_path, pdf_path, data_path, last_record_data_path = "qr.png", "/home/printer/data/label.pdf", '/home/printer/data/{record_id}.json', f'/home/printer/data/{record_ids[-1]}.json'
         for _ in range(100):
             if os.path.exists(last_record_data_path):
