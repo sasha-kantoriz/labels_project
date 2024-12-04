@@ -27,7 +27,7 @@ def print_label():
         record_ids = [int(records)]
     for record_id in record_ids:
         response = requests.get(f'https://hook.eu1.make.com/{os.getenv("make_token")}', params={'idmagazzino': record_id})
-        sleep(0.1)
+        sleep(0.5)
     qr_path, pdf_path, data_path, last_record_data_path = "qr.png", "/home/printer/data/label.pdf", '/home/printer/data/{record_id}.json', f'/home/printer/data/{record_ids[-1]}.json'
     for _ in range(100):
         if os.path.exists(last_record_data_path):
@@ -77,7 +77,7 @@ Commentario: {data['commentario']}
                 for record_id in record_ids:
                     os.remove(f'/home/printer/data/{record_id}.json')
             return send_file(pdf_file_buffer, download_name=f"label.pdf", as_attachment=True)
-        sleep(0.1)
+        sleep(0.5)
     return jsonify({'error': 'Request timed out'})
 
 
@@ -94,7 +94,7 @@ def index():
             record_ids = [int(records)]
         for record_id in record_ids:
             response = requests.get(f'https://hook.eu1.make.com/{os.getenv("make_token")}', params={'idmagazzino': record_id})
-            sleep(0.1)
+            sleep(0.5)
         qr_path, pdf_path, data_path, last_record_data_path = "qr.png", "/home/printer/data/label.pdf", '/home/printer/data/{record_id}.json', f'/home/printer/data/{record_ids[-1]}.json'
         for _ in range(100):
             if os.path.exists(last_record_data_path):
@@ -144,7 +144,7 @@ def index():
                     for record_id in record_ids:
                         os.remove(f'/home/printer/data/{record_id}.json')
                 return send_file(pdf_file_buffer, download_name=f"{data['idURL']}_label.pdf", as_attachment=True)
-            sleep(0.1)
+            sleep(0.5)
         return jsonify({'error': 'No data came back from Make.com'})
     return render_template('index.html')
 
