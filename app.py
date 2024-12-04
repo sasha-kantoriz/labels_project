@@ -36,6 +36,8 @@ def print_label():
                     data = json.loads(f.read())
                     records_presence.append(data["idURL"] == "ERROR")
             if any(records_presence):
+                for record_id in record_ids:
+                    os.remove(f'/home/printer/data/{record_id}.json')
                 return jsonify(
                     {
                         "error": "All records are missing from the database"
@@ -100,6 +102,8 @@ def index():
                         data = json.loads(f.read())
                         records_presence.append(data["idURL"] == "ERROR")
                 if any(records_presence):
+                    for record_id in record_ids:
+                        os.remove(f'/home/printer/data/{record_id}.json')
                     return jsonify(
                         {
                             "error": "All records are missing from the database"
