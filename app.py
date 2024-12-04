@@ -36,7 +36,7 @@ def print_label():
                 with open(data_path.format(record_id=record_id), 'r') as f:
                     data = json.loads(f.read())
                     records_presence.append(data["idURL"] == "ERROR")
-            if any(records_presence):
+            if not any(records_presence):
                 for record_id in record_ids:
                     os.remove(f'/home/printer/data/{record_id}.json')
                 return jsonify(
@@ -103,7 +103,7 @@ def index():
                     with open(data_path.format(record_id=record_id), 'r') as f:
                         data = json.loads(f.read())
                         records_presence.append(data["idURL"] == "ERROR")
-                if any(records_presence):
+                if not any(records_presence):
                     for record_id in record_ids:
                         os.remove(f'/home/printer/data/{record_id}.json')
                     return jsonify(
