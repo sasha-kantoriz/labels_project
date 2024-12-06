@@ -45,6 +45,7 @@ def print_label():
                     }
                 )
             pdf = FPDF(format=(103, 40))
+            pdf.add_font('dejavu-sans', style="", fname="assets/DejaVuSans.ttf")
             pdf.set_margin(0.5)
             for record_id in record_ids:
                 with open(data_path.format(record_id=record_id), 'r') as f:
@@ -55,13 +56,13 @@ def print_label():
                     img.save(qr_path)
                     # PDF
                     pdf.add_page()
-                    pdf.set_font('helvetica', size=12)
+                    pdf.set_font('dejavu-sans', size=12)
                     pdf.set_font(style="U")
                     pdf.cell(text=f"{data['titolo']}\n\n", align="C", w=103)
                     pdf.image(qr_path, x=5, y=5, w=30, h=30)
                     pdf.set_y(10)
                     pdf.set_x(40)
-                    pdf.set_font('helvetica', size=9)
+                    pdf.set_font('dejavu-sans', size=9)
                     label_text = f"""#Maga {data['idmagazzino']} --- posizione: {data['posizione']}
 Tipo: {data['tipo']} --- FEID: {data['FEID']}
 Tiratura: {data['tiratura']}
@@ -112,6 +113,7 @@ def index():
                         }
                     )
                 pdf = FPDF(format=(103, 40))
+                pdf.add_font('dejavu-sans', style="", fname="assets/DejaVuSans.ttf")
                 pdf.set_margin(0.5)
                 for record_id in record_ids:
                     with open(data_path.format(record_id=record_id), 'r') as f:
@@ -122,13 +124,13 @@ def index():
                         img.save(qr_path)
                         # PDF
                         pdf.add_page()
-                        pdf.set_font('helvetica', size=12)
+                        pdf.set_font('dejavu-sans', size=12)
                         pdf.set_font(style="U")
                         pdf.cell(text=f"{data['titolo']}\n\n", align="C", w=103)
                         pdf.image(qr_path, x=5, y=5, w=30, h=30)
                         pdf.set_y(10)
                         pdf.set_x(40)
-                        pdf.set_font('helvetica', size=9)
+                        pdf.set_font('dejavu-sans', size=9)
                         label_text = f"""#Maga {data['idmagazzino']} --- posizione: {data['posizione']}
     Tipo: {data['tipo']} --- FEID: {data['FEID']}
     Tiratura: {data['tiratura']}
