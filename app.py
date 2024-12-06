@@ -29,7 +29,7 @@ def print_label():
         response = requests.get(f'https://hook.eu1.make.com/{os.getenv("make_token")}', params={'idmagazzino': record_id})
         sleep(0.5)
     qr_path, pdf_path, data_path, last_record_data_path = "qr.png", "/home/printer/data/label.pdf", '/home/printer/data/{record_id}.json', f'/home/printer/data/{record_ids[-1]}.json'
-    for _ in range(100):
+    for _ in range(1000):
         if os.path.exists(last_record_data_path):
             records_presence = []
             for record_id in record_ids:
@@ -96,7 +96,7 @@ def index():
             response = requests.get(f'https://hook.eu1.make.com/{os.getenv("make_token")}', params={'idmagazzino': record_id})
             sleep(0.5)
         qr_path, pdf_path, data_path, last_record_data_path = "qr.png", "/home/printer/data/label.pdf", '/home/printer/data/{record_id}.json', f'/home/printer/data/{record_ids[-1]}.json'
-        for _ in range(100):
+        for _ in range(1000):
             if os.path.exists(last_record_data_path):
                 records_presence = []
                 for record_id in record_ids:
