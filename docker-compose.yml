@@ -2,7 +2,7 @@ services:
   app:
     build: ./
     restart: always
-    command: gunicorn --bind 0.0.0.0:5000 app:app --access-logfile '-' --error-logfile '-' --timeout 3600
+    command: gunicorn --bind 0.0.0.0:5000 app:app --access-logfile '-' --error-logfile '-' --timeout 3600 --workes 2 --threads 2
     environment:
       - SCRIPT_NAME=/labels
     env_file:
