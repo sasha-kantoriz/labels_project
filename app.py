@@ -1,9 +1,11 @@
 import io
 import os
 import json
+import shutil
 import pathlib
 import requests
 from time import sleep
+from uuid import uuid4
 from flask import Flask, request, jsonify, send_file
 from fpdf import FPDF
 import qrcode
@@ -14,6 +16,9 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def print_label():
+    request_id = uuid4().hex
+    request_data_path = f'/home/printer/data/{request_id}'
+    pathlib.Path(request_data_path).mkdir(exist_ok=True)
     if request.args.get('id-input'):
         records = request.args.get('id-input')
         if '-' in records:
@@ -24,19 +29,19 @@ def print_label():
         else:
             record_ids = [int(records)]
         for record_id in record_ids:
-            response = requests.get(f'https://hook.eu1.make.com/{os.getenv("make_token")}', params={'idmagazzino': record_id})
+            response = requests.get(f'https://hook.eu1.make.com/{os.getenv("make_token")}', params={'idmagazzino': record_id, 'request_id': request_id})
             sleep(0.5)
-        qr_path, pdf_path, data_path, last_record_data_path = "qr.png", "/home/printer/data/label.pdf", '/home/printer/data/{record_id}.json', f'/home/printer/data/{record_ids[-1]}.json'
+        qr_path, pdf_path, data_path, last_record_data_path = "qr-{record_id}.png", f"{request_data_path}/label.pdf", "/{request_data_path}/{record_id}.json", f"{request_data_path}/{record_ids[-1]}.json"
         for _ in range(1000):
             if os.path.exists(last_record_data_path):
                 records_presence = []
                 for record_id in record_ids:
-                    with open(data_path.format(record_id=record_id), 'r') as f:
+                    with open(data_path.format(request_data_path=request_data_path, record_id=record_id), 'r') as f:
                         data = json.loads(f.read())
                         records_presence.append(data["idURL"] == "ERROR")
                 if all(records_presence):
                     for record_id in record_ids:
-                        os.remove(f'/home/printer/data/{record_id}.json')
+                        os.remove(data_path.format(request_data_path=request_data_path, record_id=record_id))
                     return jsonify(
                         {
                             "error": "All records are missing from the database"
@@ -47,17 +52,17 @@ def print_label():
                 pdf.add_font('dejavu-sans-bold', style="B", fname="assets/dejavu-sans.bold.ttf")
                 pdf.set_margin(0.5)
                 for record_id in record_ids:
-                    with open(data_path.format(record_id=record_id), 'r') as f:
+                    with open(data_path.format(request_data_path=request_data_path, record_id=record_id), 'r') as f:
                         data = json.loads(f.read())
                         if data["idURL"] == "ERROR": continue
                         url = f"https://ff.wpboy.it/edit-item/?record={data['idURL']}"
                         img = qrcode.make(url, box_size=30, border=1)
-                        img.save(qr_path)
+                        img.save(qr_path.format(record_id=record_id))
                         # PDF
                         pdf.add_page()
                         pdf.set_font('dejavu-sans-bold', style="B", size=13)
                         pdf.multi_cell(h=4.5, align='C', w=100, text=f"{data['titolo']}", border=1)
-                        pdf.image("qr.png", x=2, y=11, w=22, h=22)
+                        pdf.image(qr_path.format(record_id=record_id), x=2, y=11, w=22, h=22)
                         pdf.set_y(13)
                         pdf.set_x(22)
                         pdf.set_font('dejavu-sans-bold', style="B", size=12)
@@ -76,10 +81,7 @@ def print_label():
                 with open(pdf_path, 'rb') as pdf_file:
                     pdf_file_buffer = io.BytesIO(pdf_file.read())
                     pdf_file_buffer.seek(0)
-                    for file in [qr_path, pdf_path]:
-                        os.remove(file)
-                    for record_id in record_ids:
-                        os.remove(data_path.format(record_id=record_id))
+                    shutil.rmtree(request_data_path, ignore_errors=True)
                 return send_file(pdf_file_buffer, download_name=f"label.pdf", as_attachment=True)
             sleep(0.5)
     elif request.args.get('id-po'):
@@ -93,19 +95,19 @@ def print_label():
             record_ids = [int(records)]
         for record_id in record_ids:
             response = requests.get(f'https://hook.eu1.make.com/{os.getenv("make_token")}',
-                                    params={'idmagazzino': record_id})
+                                    params={'idmagazzino': record_id, 'request_id': request_id})
             sleep(0.5)
         pdf_path, data_path, last_record_data_path = "/home/printer/data/label-po.pdf", '/home/printer/data/{record_id}-po.json', f'/home/printer/data/{record_ids[-1]}-po.json'
         for _ in range(1000):
             if os.path.exists(last_record_data_path):
                 records_presence = []
                 for record_id in record_ids:
-                    with open(data_path.format(record_id=record_id), 'r') as f:
+                    with open(data_path.format(request_data_path=request_data_path, record_id=record_id), 'r') as f:
                         data = json.loads(f.read())
                         records_presence.append(data["idURL"] == "ERROR")
                 if all(records_presence):
                     for record_id in record_ids:
-                        os.remove(f'/home/printer/data/{record_id}.json')
+                        os.remove(data_path.format(request_data_path=request_data_path, record_id=record_id))
                     return jsonify(
                         {
                             "error": "All records are missing from the database"
@@ -146,9 +148,7 @@ def print_label():
                 with open(pdf_path, 'rb') as pdf_file:
                     pdf_file_buffer = io.BytesIO(pdf_file.read())
                     pdf_file_buffer.seek(0)
-                    os.remove(pdf_path)
-                    for record_id in record_ids:
-                        os.remove(data_path.format(record_id=record_id))
+                    shutil.rmtree(request_data_path, ignore_errors=True)
                 return send_file(pdf_file_buffer, download_name=f"label.pdf", as_attachment=True)
             sleep(0.5)
     else:
@@ -158,8 +158,7 @@ def print_label():
 
 @app.route('/callback', methods=['POST'])
 def callback():
-    pathlib.Path('/home/printer/data').mkdir(exist_ok=True)
     data = request.form
-    with open(f'/home/printer/data/{data["idmagazzino"]}.json', 'w') as f:
+    with open(f'/home/printer/data/{data["request_id"]}/{data["idmagazzino"]}.json', 'w') as f:
         f.write(json.dumps(data))
     return data
