@@ -63,7 +63,7 @@ def print_label():
                     pdf.set_y(13)
                     pdf.set_x(22)
                     pdf.set_font('dejavu-sans-bold', style="B", size=12)
-                    pdf.cell(text=f"#Magazzino: {data['idmagazzino']} <> FE-id: {data['FEID']}", align="C", w=78)
+                    pdf.cell(text=f"#Maga: {data['idmagazzino']} <> FE-id: {data['FEID']}", align="C", w=78)
                     pdf.set_y(18)
                     pdf.set_x(22)
                     pdf.set_font('dejavu-sans')
