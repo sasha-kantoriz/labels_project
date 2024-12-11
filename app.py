@@ -56,19 +56,25 @@ def print_label():
                     img.save(qr_path)
                     # PDF
                     pdf.add_page()
+                    pdf.set_font('dejavu-sans', size=13)
+                    pdf.set_font(style="B")
+                    pdf.multi_cell(h=4.5, align='C', w=100, text=f"{data['titolo']}", border=1)
+                    pdf.image("qr.png", x=2, y=11, w=22, h=22)
+                    pdf.set_y(13)
+                    pdf.set_x(22)
                     pdf.set_font('dejavu-sans', size=12)
-                    pdf.set_font(style="U")
-                    pdf.cell(text=f"{data['titolo']}\n\n", align="C", w=103)
-                    pdf.image(qr_path, x=5, y=5, w=30, h=30)
-                    pdf.set_y(10)
-                    pdf.set_x(40)
-                    pdf.set_font('dejavu-sans', size=9)
-                    label_text = f"""#Maga {data['idmagazzino']} --- posizione: {data['posizione']}
-Tipo: {data['tipo']} --- FEID: {data['FEID']}
-Tiratura: {data['tiratura']}
-Commentario: {data['commentario']}
-                    """
-                    pdf.multi_cell(text=label_text, align="L", w=93)
+                    pdf.set_font(style="B")
+                    pdf.cell(text=f"#Magazzino: {data['idmagazzino']} <> FE-id: {data['FEID']}", align="C", w=78)
+                    pdf.set_y(18)
+                    pdf.set_x(22)
+                    pdf.set_font(style="")
+                    pdf.cell(text=f"Tipo: {data['tipo']} <> Pos: {data['posizione']}", align="C", w=78)
+                    pdf.set_y(23)
+                    pdf.set_x(22)
+                    pdf.cell(text=f"Tiratura: {data['tiratura']}", align="C", w=78)
+                    pdf.set_y(28)
+                    pdf.set_x(22)
+                    pdf.cell(text=f"Commentario: {data['commentario']}", align="C", w=78)
             pdf.output(pdf_path)
             with open(pdf_path, 'rb') as pdf_file:
                 pdf_file_buffer = io.BytesIO(pdf_file.read())
@@ -124,19 +130,25 @@ def index():
                         img.save(qr_path)
                         # PDF
                         pdf.add_page()
+                        pdf.set_font('dejavu-sans', size=13)
+                        pdf.set_font(style="B")
+                        pdf.multi_cell(h=4.5, align='C', w=100, text=f"{data['titolo']}", border=1)
+                        pdf.image("qr.png", x=2, y=11, w=22, h=22)
+                        pdf.set_y(13)
+                        pdf.set_x(22)
                         pdf.set_font('dejavu-sans', size=12)
-                        pdf.set_font(style="U")
-                        pdf.cell(text=f"{data['titolo']}\n\n", align="C", w=103)
-                        pdf.image(qr_path, x=5, y=5, w=30, h=30)
-                        pdf.set_y(10)
-                        pdf.set_x(40)
-                        pdf.set_font('dejavu-sans', size=9)
-                        label_text = f"""#Maga {data['idmagazzino']} --- posizione: {data['posizione']}
-    Tipo: {data['tipo']} --- FEID: {data['FEID']}
-    Tiratura: {data['tiratura']}
-    Commentario: {data['commentario']}
-                        """
-                        pdf.multi_cell(text=label_text, align="L", w=93)
+                        pdf.set_font(style="B")
+                        pdf.cell(text=f"#Magazzino: {data['idmagazzino']} <> FE-id: {data['FEID']}", align="C", w=78)
+                        pdf.set_y(18)
+                        pdf.set_x(22)
+                        pdf.set_font(style="")
+                        pdf.cell(text=f"Tipo: {data['tipo']} <> Pos: {data['posizione']}", align="C", w=78)
+                        pdf.set_y(23)
+                        pdf.set_x(22)
+                        pdf.cell(text=f"Tiratura: {data['tiratura']}", align="C", w=78)
+                        pdf.set_y(28)
+                        pdf.set_x(22)
+                        pdf.cell(text=f"Commentario: {data['commentario']}", align="C", w=78)
                 pdf.output(pdf_path)
                 with open(pdf_path, 'rb') as pdf_file:
                     pdf_file_buffer = io.BytesIO(pdf_file.read())
