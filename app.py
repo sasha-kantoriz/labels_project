@@ -31,7 +31,7 @@ def print_label():
         for record_id in record_ids:
             response = requests.get(f'https://hook.eu1.make.com/{os.getenv("make_token")}', params={'idmagazzino': record_id, 'request_id': request_id})
             sleep(0.5)
-        qr_path, pdf_path, data_path, last_record_data_path = "qr-{record_id}.png", f"{request_data_path}/label.pdf", "/{request_data_path}/{record_id}.json", f"{request_data_path}/{record_ids[-1]}.json"
+        qr_path, pdf_path, data_path, last_record_data_path = "qr-{record_id}.png", f"{request_data_path}/label.pdf", "{request_data_path}/{record_id}.json", f"{request_data_path}/{record_ids[-1]}.json"
         for _ in range(1000):
             if os.path.exists(last_record_data_path):
                 records_presence = []
@@ -97,7 +97,7 @@ def print_label():
             response = requests.get(f'https://hook.eu1.make.com/{os.getenv("make_token")}',
                                     params={'idmagazzino': record_id, 'request_id': request_id})
             sleep(0.5)
-        pdf_path, data_path, last_record_data_path = "/home/printer/data/label-po.pdf", '/home/printer/data/{record_id}-po.json', f'/home/printer/data/{record_ids[-1]}-po.json'
+        pdf_path, data_path, last_record_data_path = "/home/printer/data/label-po.pdf", '/home/printer/data/{record_id}.json', f'/home/printer/data/{record_ids[-1]}.json'
         for _ in range(1000):
             if os.path.exists(last_record_data_path):
                 records_presence = []
