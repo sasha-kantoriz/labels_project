@@ -97,7 +97,7 @@ def print_label():
             response = requests.get(f'https://hook.eu1.make.com/{os.getenv("make_token")}',
                                     params={'idmagazzino': record_id, 'request_id': request_id})
             sleep(0.5)
-        pdf_path, data_path, last_record_data_path = "/home/printer/data/label-po.pdf", '/home/printer/data/{record_id}.json', f'/home/printer/data/{record_ids[-1]}.json'
+        pdf_path, data_path, last_record_data_path = f"{request_data_path}/label-po.pdf", "{request_data_path}/{record_id}.json", f"{request_data_path}/{record_ids[-1]}.json"
         for _ in range(1000):
             if os.path.exists(last_record_data_path):
                 records_presence = []
