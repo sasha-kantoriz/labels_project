@@ -127,7 +127,7 @@ def print_label():
                         pdf.set_y(4)
                         pdf.set_x(0)
                         pdf.cell(text=f"PO#: {data['po']}", align="C", w=100)
-                        pdf.set_font('dejavu-sans', size=13)
+                        pdf.set_font('dejavu-sans', size=10)
                         pdf.set_y(10)
                         pdf.set_x(0)
                         pdf.multi_cell(h=4.5, align='C', w=100, text=f"{data['titolo']}", border=0)
