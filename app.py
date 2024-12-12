@@ -118,7 +118,7 @@ def print_label():
                 pdf.add_font('dejavu-sans-bold', style="B", fname="assets/dejavu-sans.bold.ttf")
                 pdf.set_margin(0)
                 for record_id in record_ids:
-                    with open(data_path.format(record_id=record_id), 'r') as f:
+                    with open(data_path.format(request_data_path=request_data_path, record_id=record_id), 'r') as f:
                         data = json.loads(f.read())
                         if data["idURL"] == "ERROR": continue
                         # PDF
