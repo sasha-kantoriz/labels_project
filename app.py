@@ -18,7 +18,7 @@ app = Flask(__name__)
 def print_label():
     request_id = uuid4().hex
     request_data_path = f'/home/printer/data/{request_id}'
-    pathlib.Path(request_data_path).mkdir(exist_ok=True)
+    pathlib.Path(request_data_path).mkdir(exist_ok=True, parents=True)
     if request.args.get('id-input'):
         records = request.args.get('id-input')
         if '-' in records:
@@ -82,7 +82,7 @@ def print_label():
                     pdf_file_buffer = io.BytesIO(pdf_file.read())
                     pdf_file_buffer.seek(0)
                     shutil.rmtree(request_data_path, ignore_errors=True)
-                return send_file(pdf_file_buffer, download_name=f"label.pdf", as_attachment=True)
+                return send_file(pdf_file_buffer, download_name="label.pdf", as_attachment=True)
             sleep(0.5)
     elif request.args.get('id-po'):
         records = request.args.get('id-po')
@@ -149,7 +149,7 @@ def print_label():
                     pdf_file_buffer = io.BytesIO(pdf_file.read())
                     pdf_file_buffer.seek(0)
                     shutil.rmtree(request_data_path, ignore_errors=True)
-                return send_file(pdf_file_buffer, download_name=f"label.pdf", as_attachment=True)
+                return send_file(pdf_file_buffer, download_name="label.pdf", as_attachment=True)
             sleep(0.5)
     else:
         return jsonify({'error': 'Missing input parameters'})
